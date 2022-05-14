@@ -1,10 +1,12 @@
-module github.com/douyinv0
+module github.com/wujeevan/douyinv0
 
 go 1.18
 
 require (
 	github.com/gin-gonic/gin v1.7.7
-	github.com/wujeevan/go-simple-community v0.0.0-20220510132100-e5c77a8c684e
+	github.com/qmhball/db2gorm v0.1.0
+	gorm.io/driver/mysql v1.3.3
+	gorm.io/gorm v1.23.5
 )
 
 require (
@@ -12,7 +14,10 @@ require (
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
+	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.3.3 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
