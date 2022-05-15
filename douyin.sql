@@ -11,31 +11,44 @@ CREATE TABLE `video`(
     `cover_url` VARCHAR(50) NOT NULL COMMENT '视频封面地址',
     `favorite_count` BIGINT NOT NULL DEFAULT 0 COMMENT '点赞总数',
     `comment_count` BIGINT NOT NULL DEFAULT 0 COMMENT '评论总数',
-    `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `create_time` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
+    `update_time` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '修改时间',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '视频是否有效'
 ) DEFAULT CHARSET UTF8 COMMENT '视频表';
 
 INSERT INTO
-    `video`(user_id, play_url, cover_url, create_time)
+    `video`(
+        user_id,
+        play_url,
+        cover_url,
+        create_time,
+        favorite_count,
+        comment_count
+    )
 VALUES
     (
         1,
-        '/static/videos/test1.mp4',
-        '/static/videos/test1_cover.jpg',
-        '2022-5-12 08:00'
+        '/upload/test1.mp4',
+        '/upload/test1_cover.jpg',
+        '2022-5-12 08:31',
+        1,
+        1
     ),
     (
         2,
-        '/static/videos/test2.mp4',
-        '/static/videos/test2_cover.jpg',
-        '2022-5-12 12:00'
+        '/upload/test2.mp4',
+        '/upload/test2_cover.jpg',
+        '2022-5-12 12:25',
+        1,
+        1
     ),
     (
         1,
-        '/static/videos/test3.mp4',
-        '/static/videos/test3_cover.jpg',
-        '2022-5-12 18:00'
+        '/upload/test3.mp4',
+        '/upload/test3_cover.jpg',
+        '2022-5-12 18:49',
+        0,
+        0
     );
 
 use `douyin`;
@@ -50,12 +63,18 @@ CREATE TABLE `user`(
     `follow_count` BIGINT NOT NULL DEFAULT 0 COMMENT '关注总数',
     `follower_count` BIGINT NOT NULL DEFAULT 0 COMMENT '粉丝总数',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '账号是否有效'
 ) DEFAULT CHARSET UTF8 COMMENT '用户表';
 
 INSERT INTO
-    `user`(`username`, `password`, `token`, `follow_count`, `follower_count`)
+    `user`(
+        `username`,
+        `password`,
+        `token`,
+        `follow_count`,
+        `follower_count`
+    )
 VALUES
     ('admin', 'pass', 'adminpass', 1, 0),
     ('user', 'pass', 'userpass', 0, 1);
@@ -71,7 +90,7 @@ CREATE TABLE `comment`(
     `content` VARCHAR(300) NOT NULL COMMENT '评论内容',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否评论',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间'
+    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
 ) DEFAULT CHARSET UTF8 COMMENT '评论表';
 
 INSERT INTO
@@ -90,7 +109,7 @@ CREATE TABLE `user_favorite_video`(
     `video_id` BIGINT NOT NULL COMMENT '视频id',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否点赞',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间'
+    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
 ) DEFAULT CHARSET UTF8 COMMENT '点赞表';
 
 INSERT INTO
@@ -110,9 +129,14 @@ CREATE TABLE `user_follow` (
     `followed_user_id` BIGINT NOT NULL COMMENT '用户乙id',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否关注',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间'
+    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
 ) DEFAULT CHARSET UTF8 COMMENT '关注表';
 
 INSERT INTO `user_follow`(user_id, followed_user_id) VALUES (1, 2);
 
-SELECT unix_timestamp(update_time)  FROM video WHERE unix_timestamp(update_time) <= 1652501999;
+SELECT
+    unix_timestamp(update_time)
+FROM
+    video
+WHERE
+    unix_timestamp(update_time) <= 1652501999;

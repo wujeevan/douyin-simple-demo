@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/wujeevan/douyinv0/controller"
+	"github.com/wujeevan/douyinv0/handler"
 	"github.com/wujeevan/douyinv0/repository"
 )
 
@@ -29,10 +30,16 @@ func main() {
 		os.Exit(-1)
 	}
 	r := gin.Default()
-	r.GET("/douyin/feed", func(ctx *gin.Context) {
-		latest_time := ctx.Query("latest_time")
-		token := ctx.Query("token")
-		ctx.JSON(200, controller.QueryFeedVideo(latest_time, token))
+	r.GET("/douyin/feed", handler.QueryFeedVideo)
+	r.GET("/upload/:filename", func(ctx *gin.Context) {
+		filepath := "." + ctx.Request.URL.String()
+		filename := ctx.Query("filename")
+		if strings.Contains(filename, ".mp4") {
+			ctx.Header("content-type", "video/mp4")
+		} else if strings.Contains(filename, ".jpg") {
+			ctx.Header("content-type", "image/jpeg")
+		}
+		ctx.File(filepath)
 	})
 	err := r.Run(":8888")
 	if err != nil {

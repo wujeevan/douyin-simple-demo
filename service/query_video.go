@@ -8,8 +8,8 @@ import (
 )
 
 type FeedVideo struct {
-	nextTime  int64
-	videoList []*repository.Video
+	NextTime  int64
+	VideoList []*repository.Video
 }
 
 func QueryFeedVideo(latestTime int64, token string) (*FeedVideo, error) {
@@ -67,8 +67,8 @@ func (f *QueryFeedVideoFlow) PrepareFeedVideo() error {
 
 func (f *QueryFeedVideoFlow) PackFeedVideo() error {
 	f.feedVideo = &FeedVideo{
-		nextTime:  f.nextTime,
-		videoList: f.videoList,
+		NextTime:  f.nextTime,
+		VideoList: f.videoList,
 	}
 	return nil
 }

@@ -3,7 +3,6 @@ package repository
 import (
 	"os"
 	"testing"
-	"time"
 )
 
 func TestMain(m *testing.M) {
@@ -14,5 +13,5 @@ func TestMain(m *testing.M) {
 }
 
 func TestVideoDao_QueryFeedVideoNoToken(t *testing.T) {
-	QueryFeedVideo(time.Now().Unix(), "")
+	QueryFeedVideo(1652313600, "")
 }
