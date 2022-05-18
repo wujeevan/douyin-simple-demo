@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/wujeevan/douyinv0/repository"
+	"github.com/wujeevan/douyinv0/utils"
 )
 
 type FeedVideo struct {
@@ -12,8 +12,22 @@ type FeedVideo struct {
 	VideoList []*repository.Video
 }
 
+type UserVideo = []*repository.Video
+
 func QueryFeedVideo(latestTime int64, token string) (*FeedVideo, error) {
 	return NewQueryFeedVideoFlow(latestTime, token).Do()
+}
+
+func QueryUserVideo(token string) (UserVideo, error) {
+	user, err := QueryUserByToken(token)
+	if err != nil {
+		return nil, err
+	}
+	videos, err := repository.QueryUserVideoById(user.ID)
+	if err != nil {
+		return nil, err
+	}
+	return videos, err
 }
 
 func NewQueryFeedVideoFlow(latestTime int64, token string) *QueryFeedVideoFlow {
@@ -28,6 +42,7 @@ type QueryFeedVideoFlow struct {
 	latestTime int64
 	token      string
 	nextTime   int64
+	userId     int64
 	videoList  []*repository.Video
 	feedVideo  *FeedVideo
 }
@@ -46,16 +61,23 @@ func (f *QueryFeedVideoFlow) Do() (*FeedVideo, error) {
 }
 
 func (f *QueryFeedVideoFlow) CheckParam() error {
-	//TODO: 检查时间是否正常，token是否带有特殊字符防注入
-	if strings.ContainsAny(f.token, "'<>&*") {
+	if err := utils.CheckSqlInjection(f.token); err != nil {
 		return errors.New("the token is invalid")
+	}
+	user, err := QueryUserByToken(f.token)
+	if f.token == "" {
+		f.userId = 0
+	} else if err != nil {
+		return err
+	} else {
+		f.userId = user.ID
 	}
 	return nil
 }
 
 func (f *QueryFeedVideoFlow) PrepareFeedVideo() error {
 	var err error
-	f.videoList, err = repository.QueryFeedVideo(f.latestTime, f.token)
+	f.videoList, err = repository.QueryFeedVideo(f.latestTime, f.userId)
 	if err != nil {
 		return err
 	}

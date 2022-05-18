@@ -13,5 +13,13 @@ func TestMain(m *testing.M) {
 }
 
 func TestVideoDao_QueryFeedVideoNoToken(t *testing.T) {
-	QueryFeedVideo(1652313600, "")
+	QueryFeedVideo(1652313600, 1)
+}
+
+func TestQueryVideoById(t *testing.T) {
+	QueryUserVideoById(1)
+}
+
+func TestQueryFavoriteVideo(t *testing.T) {
+	QueryFavoriteVideo(1)
 }
