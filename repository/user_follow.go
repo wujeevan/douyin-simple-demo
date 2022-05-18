@@ -28,7 +28,7 @@ func DoFollowUser(userId, followedUserId int64) error {
 		UserID:         userId,
 		FollowedUserID: followedUserId,
 	}
-	if err := db.Debug().Where(follow).FirstOrCreate(follow, follow).Error; err != nil {
+	if err := db.Where(follow).FirstOrCreate(follow, follow).Error; err != nil {
 		return err
 	}
 	if err := db.Model(follow).Update("status", true).Error; err != nil {

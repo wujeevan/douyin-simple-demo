@@ -1,10 +1,7 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/wujeevan/douyinv0/repository"
-	"github.com/wujeevan/douyinv0/utils"
 )
 
 type FeedVideo struct {
@@ -49,21 +46,18 @@ type QueryFeedVideoFlow struct {
 
 func (f *QueryFeedVideoFlow) Do() (*FeedVideo, error) {
 	if err := f.CheckParam(); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	if err := f.PrepareFeedVideo(); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	if err := f.PackFeedVideo(); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return f.feedVideo, nil
 }
 
 func (f *QueryFeedVideoFlow) CheckParam() error {
-	if err := utils.CheckSqlInjection(f.token); err != nil {
-		return errors.New("the token is invalid")
-	}
 	user, err := QueryUserByToken(f.token)
 	if f.token == "" {
 		f.userId = 0
@@ -84,7 +78,7 @@ func (f *QueryFeedVideoFlow) PrepareFeedVideo() error {
 	if len(f.videoList) > 0 {
 		f.nextTime = f.videoList[len(f.videoList)-1].CreateTime.UnixMilli()
 	}
-	return err
+	return nil
 }
 
 func (f *QueryFeedVideoFlow) PackFeedVideo() error {

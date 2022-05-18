@@ -20,15 +20,17 @@ func ProcessFollowUser(ctx *gin.Context) {
 	followedId, err1 := strconv.ParseInt(followedIdStr, 10, 64)
 	actionType, err2 := strconv.ParseInt(actionTypeStr, 10, 64)
 	if err1 != nil || err2 != nil {
-		ctx.JSON(200, &SignInResponse{
-			Code: -1,
-			Msg:  err1.Error(),
+		ctx.JSON(200, &FollowResponse{
+			Code:     -1,
+			Msg:      err1.Error(),
+			UserList: []NULL{},
 		})
 	} else {
 		if err := service.ProcessFollowUser(token, actionType, followedId); err != nil {
 			ctx.JSON(200, &FollowResponse{
-				Code: -1,
-				Msg:  err1.Error(),
+				Code:     -1,
+				Msg:      err1.Error(),
+				UserList: []NULL{},
 			})
 		} else {
 			ctx.JSON(200, &FollowResponse{

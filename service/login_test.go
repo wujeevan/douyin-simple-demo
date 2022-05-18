@@ -17,7 +17,7 @@ func TestSignIn(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *SignInfo
+		want    interface{}
 		wantErr bool
 	}{
 		// TODO: Add test cases.
@@ -26,6 +26,7 @@ func TestSignIn(t *testing.T) {
 				username: "xxxyyy",
 				password: "hellowo",
 			},
+			want: "username not exists",
 		},
 	}
 	for _, tt := range tests {

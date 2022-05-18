@@ -21,6 +21,8 @@ type UserVideoResponse struct {
 	VideoList interface{} `json:"video_list"`
 }
 
+type NULL struct{}
+
 func QueryFeedVideo(ctx *gin.Context) {
 	latest_time_ := ctx.Query("latest_time")
 	token := ctx.Query("token")
@@ -31,9 +33,11 @@ func QueryFeedVideo(ctx *gin.Context) {
 	feedVideo, err := service.QueryFeedVideo(latestTime, token)
 	if err != nil {
 		ctx.JSON(200, &FeedVideoResponse{
-			Code: -1,
-			Msg:  err.Error(),
+			Code:      0,
+			Msg:       err.Error(),
+			VideoList: []NULL{},
 		})
+		return
 	}
 	for _, video := range feedVideo.VideoList {
 		video.PlayUrl = "http://" + ctx.Request.Host + video.PlayUrl
@@ -52,9 +56,11 @@ func QueryUserVideo(ctx *gin.Context) {
 	userVideo, err := service.QueryUserVideo(token)
 	if err != nil {
 		ctx.JSON(200, &UserVideoResponse{
-			Code: -1,
-			Msg:  err.Error(),
+			Code:      0,
+			Msg:       err.Error(),
+			VideoList: []NULL{},
 		})
+		return
 	}
 	for _, video := range userVideo {
 		video.PlayUrl = "http://" + ctx.Request.Host + video.PlayUrl

@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/wujeevan/douyinv0/repository"
-	"github.com/wujeevan/douyinv0/utils"
 )
 
 func GenerateVideoCover(filepath string) (string, error) {
@@ -53,9 +52,6 @@ func (f *UploadVideoFlow) Do() error {
 }
 
 func (f *UploadVideoFlow) CheckParam() error {
-	if err := utils.CheckSqlInjection(f.Token); err != nil {
-		return errors.New("token is invalid")
-	}
 	user, err := QueryUserByToken(f.Token)
 	if err != nil {
 		return err

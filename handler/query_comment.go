@@ -22,8 +22,9 @@ func ProcessComment(ctx *gin.Context) {
 	actionType, err2 := strconv.ParseInt(actionTypeStr, 10, 64)
 	if err1 != nil || err2 != nil {
 		ctx.JSON(200, &VideoCommentResponse{
-			Code: -1,
-			Msg:  err1.Error(),
+			Code:        -1,
+			Msg:         err1.Error(),
+			CommentList: []NULL{},
 		})
 	} else {
 		if err := service.ProcessComment(videoId, actionType, token, content); err != nil {

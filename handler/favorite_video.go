@@ -22,7 +22,7 @@ func ProcessFavoriteVideo(ctx *gin.Context) {
 		if err := service.ProcessFavoriteVideo(token, videoId, actionType); err != nil {
 			ctx.JSON(200, &SignInResponse{
 				Code: -1,
-				Msg:  err1.Error(),
+				Msg:  err.Error(),
 			})
 		} else {
 			ctx.JSON(200, &SignInResponse{

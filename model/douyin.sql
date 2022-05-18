@@ -37,12 +37,12 @@ VALUES
         1
     ),
     (
-        2,
+        1,
         '/upload/test2.mp4',
         '/upload/test2_cover.jpg',
         '2022-5-12 12:25',
-        1,
-        1
+        0,
+        0
     ),
     (
         1,
@@ -62,7 +62,7 @@ CREATE TABLE `user`(
     `username` VARCHAR(32) NOT NULL COMMENT '用户名',
     `password` VARCHAR(32) NOT NULL COMMENT '用户密码',
     `token` VARCHAR(64) NOT NULL COMMENT '用户鉴权',
-    `token_create_time` TIMESTAMP NOT NULL COMMENT '用户鉴权创建时间',
+    `token_create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '用户鉴权创建时间',
     `follow_count` BIGINT NOT NULL DEFAULT 0 COMMENT '关注总数',
     `follower_count` BIGINT NOT NULL DEFAULT 0 COMMENT '粉丝总数',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -82,12 +82,10 @@ INSERT INTO
         `password`,
         `token`,
         `follow_count`,
-        `follower_count`,
-        `token_create_time`
+        `follower_count`
     )
 VALUES
-    ('admin', 'pass', 'adminpass', 1, 0, current_time),
-    ('user', 'pass', 'userpass', 0, 1, current_time);
+    ('admin', 'pass', 'adminpass', 0, 0);
 
 use `douyin`;
 
@@ -108,8 +106,8 @@ CREATE INDEX comment_index ON `comment`(`user_id`, `video_id`);
 INSERT INTO
     `comment`(user_id, video_id, content)
 VALUES
-    (1, 1, '第一个评论'),
-    (2, 2, '第二个评论');
+    (1, 1, '第一个评论');
+
 
 use `douyin`;
 
@@ -127,10 +125,9 @@ CREATE TABLE `user_favorite_video`(
 CREATE INDEX favorite_index ON `user_favorite_video`(`user_id`, `video_id`);
 
 INSERT INTO
-    `user_favorite_video`(user_id, video_id, status)
+    `user_favorite_video`(user_id, video_id)
 VALUES
-    (1, 1, 1),
-    (2, 2, 1);
+    (1, 1);
 
 use `douyin`;
 
@@ -148,4 +145,4 @@ CREATE TABLE `user_follow` (
 
 CREATE INDEX user_index ON `user_follow`(`user_id`, `followed_user_id`);
 
-INSERT INTO `user_follow`(user_id, followed_user_id) VALUES (1, 2);
+INSERT INTO `user_follow`(user_id, followed_user_id) VALUES (1, 1);
