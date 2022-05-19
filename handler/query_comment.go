@@ -18,26 +18,20 @@ func ProcessComment(ctx *gin.Context) {
 	videoIdStr := ctx.Query("video_id")
 	actionTypeStr := ctx.Query("action_type")
 	content := ctx.Query("comment_text")
-	videoId, err1 := strconv.ParseInt(videoIdStr, 10, 64)
-	actionType, err2 := strconv.ParseInt(actionTypeStr, 10, 64)
-	if err1 != nil || err2 != nil {
-		ctx.JSON(200, &VideoCommentResponse{
-			Code:        -1,
-			Msg:         err1.Error(),
-			CommentList: []NULL{},
-		})
+	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
+	if err != nil {
+		SendFailResponse(ctx, err)
+		return
+	}
+	actionType, err := strconv.ParseInt(actionTypeStr, 10, 64)
+	if err != nil {
+		SendFailResponse(ctx, err)
+		return
+	}
+	if err := service.ProcessComment(videoId, actionType, token, content); err != nil {
+		SendFailResponse(ctx, err)
 	} else {
-		if err := service.ProcessComment(videoId, actionType, token, content); err != nil {
-			ctx.JSON(200, &VideoCommentResponse{
-				Code: -1,
-				Msg:  err1.Error(),
-			})
-		} else {
-			ctx.JSON(200, &VideoCommentResponse{
-				Code: 0,
-				Msg:  "success",
-			})
-		}
+		SendSuccessResponse(ctx)
 	}
 }
 
@@ -47,15 +41,17 @@ func QueryCommentList(ctx *gin.Context) {
 	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
 	if err != nil {
 		ctx.JSON(200, &VideoCommentResponse{
-			Code: -1,
-			Msg:  err.Error(),
+			Code:        -1,
+			Msg:         err.Error(),
+			CommentList: []NULL{},
 		})
 	} else {
 		commentList, err := service.QueryCommentList(token, videoId)
 		if err != nil {
 			ctx.JSON(200, &VideoCommentResponse{
-				Code: -1,
-				Msg:  err.Error(),
+				Code:        -1,
+				Msg:         err.Error(),
+				CommentList: []NULL{},
 			})
 		}
 		ctx.JSON(200, &VideoCommentResponse{

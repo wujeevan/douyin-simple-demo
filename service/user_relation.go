@@ -12,10 +12,16 @@ func ProcessFollowUser(token string, action_type, followedUserId int64) error {
 		return err
 	}
 	if action_type == 1 {
+		if repository.QueryIsFollow(user.ID, followedUserId) {
+			return nil
+		}
 		if err := repository.DoFollowUser(user.ID, followedUserId); err != nil {
 			return err
 		}
 	} else if action_type == 2 {
+		if !repository.QueryIsFollow(user.ID, followedUserId) {
+			return nil
+		}
 		if err := repository.NotFollowUser(user.ID, followedUserId); err != nil {
 			return err
 		}

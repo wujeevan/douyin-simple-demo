@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/wujeevan/douyinv0/service"
+	"github.com/wujeevan/douyinv0/utils"
 )
 
 type FeedVideoResponse struct {
@@ -35,13 +36,13 @@ func QueryFeedVideo(ctx *gin.Context) {
 		ctx.JSON(200, &FeedVideoResponse{
 			Code:      0,
 			Msg:       err.Error(),
-			VideoList: []NULL{},
+			VideoList: []NULL{}, //防止客户端空指针异常，列表类型都应返回空列表，而不是空指针
 		})
 		return
 	}
 	for _, video := range feedVideo.VideoList {
-		video.PlayUrl = "http://" + ctx.Request.Host + video.PlayUrl
-		video.CoverUrl = "http://" + ctx.Request.Host + video.CoverUrl
+		video.PlayUrl = utils.AddHostName(ctx.Request.Host, video.PlayUrl)
+		video.CoverUrl = utils.AddHostName(ctx.Request.Host, video.CoverUrl)
 	}
 	ctx.JSON(200, &FeedVideoResponse{
 		Code:      0,
@@ -56,15 +57,15 @@ func QueryUserVideo(ctx *gin.Context) {
 	userVideo, err := service.QueryUserVideo(token)
 	if err != nil {
 		ctx.JSON(200, &UserVideoResponse{
-			Code:      0,
+			Code:      -1,
 			Msg:       err.Error(),
 			VideoList: []NULL{},
 		})
 		return
 	}
 	for _, video := range userVideo {
-		video.PlayUrl = "http://" + ctx.Request.Host + video.PlayUrl
-		video.CoverUrl = "http://" + ctx.Request.Host + video.CoverUrl
+		video.PlayUrl = utils.AddHostName(ctx.Request.Host, video.PlayUrl)
+		video.CoverUrl = utils.AddHostName(ctx.Request.Host, video.CoverUrl)
 	}
 	ctx.JSON(200, &UserVideoResponse{
 		Code:      0,

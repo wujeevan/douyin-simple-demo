@@ -17,27 +17,20 @@ func ProcessFollowUser(ctx *gin.Context) {
 	token := ctx.Query("token")
 	followedIdStr := ctx.Query("to_user_id")
 	actionTypeStr := ctx.Query("action_type")
-	followedId, err1 := strconv.ParseInt(followedIdStr, 10, 64)
-	actionType, err2 := strconv.ParseInt(actionTypeStr, 10, 64)
-	if err1 != nil || err2 != nil {
-		ctx.JSON(200, &FollowResponse{
-			Code:     -1,
-			Msg:      err1.Error(),
-			UserList: []NULL{},
-		})
+	followedId, err := strconv.ParseInt(followedIdStr, 10, 64)
+	if err != nil {
+		SendFailResponse(ctx, err)
+		return
+	}
+	actionType, err := strconv.ParseInt(actionTypeStr, 10, 64)
+	if err != nil {
+		SendFailResponse(ctx, err)
+		return
+	}
+	if err := service.ProcessFollowUser(token, actionType, followedId); err != nil {
+		SendFailResponse(ctx, err)
 	} else {
-		if err := service.ProcessFollowUser(token, actionType, followedId); err != nil {
-			ctx.JSON(200, &FollowResponse{
-				Code:     -1,
-				Msg:      err1.Error(),
-				UserList: []NULL{},
-			})
-		} else {
-			ctx.JSON(200, &FollowResponse{
-				Code: 0,
-				Msg:  "success",
-			})
-		}
+		SendSuccessResponse(ctx)
 	}
 }
 
@@ -46,8 +39,9 @@ func QueryFollowList(ctx *gin.Context) {
 	userList, err := service.QueryFollowList(token)
 	if err != nil {
 		ctx.JSON(200, &FollowResponse{
-			Code: -1,
-			Msg:  err.Error(),
+			Code:     -1,
+			Msg:      err.Error(),
+			UserList: []NULL{},
 		})
 	}
 	ctx.JSON(200, &FollowResponse{
@@ -62,8 +56,9 @@ func QueryFollowerList(ctx *gin.Context) {
 	userList, err := service.QueryFollowerList(token)
 	if err != nil {
 		ctx.JSON(200, &FollowResponse{
-			Code: -1,
-			Msg:  err.Error(),
+			Code:     -1,
+			Msg:      err.Error(),
+			UserList: []NULL{},
 		})
 	}
 	ctx.JSON(200, &FollowResponse{

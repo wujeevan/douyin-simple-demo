@@ -31,6 +31,9 @@ func CreateComment(userId, videoId int64, content string) error {
 		VideoID: videoId,
 		Content: content,
 	}
+	if err := CheckComment(content); err != nil {
+		return err
+	}
 	if err := repository.CreateComment(comment); err != nil {
 		return err
 	}
@@ -58,4 +61,11 @@ func QueryCommentList(token string, videoId int64) ([]*repository.Comment, error
 		return nil, err
 	}
 	return commentList, nil
+}
+
+func CheckComment(comment string) error {
+	if len(comment) == 0 || len(comment) > 500 {
+		return errors.New("comment length is invalid")
+	}
+	return nil
 }

@@ -19,10 +19,7 @@ func SignIn(ctx *gin.Context) {
 	password := ctx.Query("password")
 	signInfo, err := service.SignIn(username, password)
 	if err != nil {
-		ctx.JSON(200, &SignInResponse{
-			Code: -1,
-			Msg:  err.Error(),
-		})
+		SendFailResponse(ctx, err)
 	} else {
 		ctx.JSON(200, &SignInResponse{
 			Code:   0,
@@ -38,10 +35,7 @@ func SignUp(ctx *gin.Context) {
 	password := ctx.Query("password")
 	signInfo, err := service.SignUp(username, password)
 	if err != nil {
-		ctx.JSON(200, &SignInResponse{
-			Code: -1,
-			Msg:  err.Error(),
-		})
+		SendFailResponse(ctx, err)
 	} else {
 		ctx.JSON(200, &SignInResponse{
 			Code:   0,

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"os/exec"
 	"strings"
 	"time"
 )
@@ -38,4 +39,22 @@ func CheckSqlInjection(str string) error {
 		return errors.New("invalid string")
 	}
 	return nil
+}
+
+func AddHostName(host, path string) string {
+	return "http://" + host + path
+}
+
+func GenerateVideoCover(filepath string) (string, error) {
+	path := strings.Split(filepath, ".")
+	path[0] += "_cover"
+	path[1] = "jpg"
+	cover_filepath := strings.Join(path, ".")
+	cmd := exec.Command("ffmpeg", "-y", "-ss", "1", "-i", "."+filepath, "-vframes", "1", "-vcodec", "mjpeg", "."+cover_filepath)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(string(out))
+		return "", errors.New("cover of video generate failed")
+	}
+	return cover_filepath, nil
 }
