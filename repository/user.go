@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	"errors"
+	"strconv"
 	"time"
 
 	"gorm.io/gorm"
@@ -13,6 +15,9 @@ type User struct {
 	Password        string    `json:"-"`
 	Token           string    `json:"-"`
 	TokenCreateTime time.Time `json:"-"`
+	Avatar          string    `json:"avatar"`
+	Signature       string    `json:"signature"`
+	BackgroundImage string    `json:"background_image"`
 	FollowCount     int64     `json:"follow_count" gorm:"default:0"`
 	FollowerCount   int64     `json:"follower_count" gorm:"default:0"`
 	IsFollow        bool      `json:"is_follow" gorm:"-"`
@@ -48,7 +53,19 @@ func QueryUserByToken(token string) (*User, error) {
 	return &user, nil
 }
 
-func UpdateUserToken(userId int64, token string) error {
+func QueryUserByToken_(token string) (*User, error) {
+	userIdStr, err := rdb.Get(context.TODO(), token).Result()
+	if err != nil {
+		return nil, err
+	}
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	return QueryUserById(userId)
+}
+
+func UpdateUserToken(userId int64, token string, tokenValidTime time.Duration) error {
 	user := User{
 		ID:              userId,
 		Token:           token,
@@ -58,6 +75,7 @@ func UpdateUserToken(userId int64, token string) error {
 	if err != nil {
 		return err
 	}
+	rdb.Set(context.TODO(), token, userId, tokenValidTime)
 	return nil
 }
 

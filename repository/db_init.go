@@ -1,10 +1,12 @@
 package repository
 
 import (
+	"context"
 	"log"
 	"os"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -12,6 +14,7 @@ import (
 )
 
 var db *gorm.DB
+var rdb *redis.Client
 
 func Init() error {
 	var err error
@@ -32,6 +35,15 @@ func Init() error {
 			SingularTable: true,
 		},
 	})
+	if err != nil {
+		return err
+	}
 	db.DB()
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     "127.0.0.1:3366",
+		Password: "123456",
+		DB:       0,
+	})
+	_, err = rdb.Ping(context.TODO()).Result()
 	return err
 }
