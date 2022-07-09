@@ -14,21 +14,27 @@ func main() {
 	}
 	r := gin.Default()
 	r.TrustedPlatform = gin.PlatformGoogleAppEngine
-	r.GET("/douyin/feed/", handler.QueryFeedVideo)
-	r.GET("/douyin/feed", handler.QueryFeedVideo)
-	r.POST("/douyin/user/register/", handler.SignUp)
-	r.POST("/douyin/user/login/", handler.SignIn)
-	r.GET("/douyin/user/", handler.QueryUserInfo)
-	r.GET("douyin/publish/list/", handler.QueryUserVideo)
-	r.POST("/douyin/publish/action/", handler.UploadVideo)
-	r.POST("/douyin/favorite/action/", handler.ProcessFavoriteVideo)
-	r.GET("/douyin/favorite/list/", handler.QueryFavoriteVideo)
-	r.POST("/douyin/comment/action/", handler.ProcessComment)
-	r.GET("/douyin/comment/list/", handler.QueryCommentList)
-	r.POST("/douyin/relation/action/", handler.ProcessFollowUser)
-	r.GET("/douyin/relation/follow/list/", handler.QueryFollowList)
-	r.GET("/douyin/relation/follower/list/", handler.QueryFollowerList)
-	r.GET("/upload/:filename", handler.FileSever)
+	r.Static("/upload", "./upload")
+	rg := r.Group("/douyin")
+	rg.GET("/feed/", handler.QueryFeedVideo)
+
+	rg.POST("/user/register/", handler.SignUp)
+	rg.POST("/user/login/", handler.SignIn)
+	rg.GET("/user/", handler.QueryUserInfo)
+
+	rg.GET("/publish/list/", handler.QueryUserVideo)
+	rg.POST("/publish/action/", handler.UploadVideo)
+
+	rg.POST("/favorite/action/", handler.ProcessFavoriteVideo)
+	rg.GET("/favorite/list/", handler.QueryFavoriteVideo)
+
+	rg.POST("/comment/action/", handler.ProcessComment)
+	rg.GET("/comment/list/", handler.QueryCommentList)
+
+	rg.POST("/relation/action/", handler.ProcessFollowUser)
+	rg.GET("/relation/follow/list/", handler.QueryFollowList)
+	rg.GET("/relation/follower/list/", handler.QueryFollowerList)
+
 	err := r.Run(":8888")
 	if err != nil {
 		return
