@@ -10,6 +10,7 @@ import (
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+var TokenValidTime = 7 * 24 * time.Hour
 
 func RandStr(n int) string {
 	b := make([]rune, n)
@@ -23,7 +24,7 @@ func RandStr(n int) string {
 func GenerateFilename(suffix string) string {
 	curYearDay := time.Now().YearDay()
 	randStr := RandStr(8)
-	filename := fmt.Sprintf("%s%x.%s", randStr, curYearDay, suffix)
+	filename := fmt.Sprintf("%s%x%s", randStr, curYearDay, suffix)
 	return filename
 }
 
