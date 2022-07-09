@@ -103,6 +103,10 @@ func (f *SignFlow) PrepareSignUp() error {
 		return err
 	}
 	f.UserId = user.ID
+	f.Token = utils.GenerateToken()
+	if err := repository.UpdateUserToken(f.UserId, f.Token, utils.TokenValidTime); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -127,7 +131,7 @@ func (f *SignFlow) CheckSignIn() error {
 func (f *SignFlow) PrepareSignIn() error {
 	f.UserId = f.User.ID
 	f.Token = utils.GenerateToken()
-	if err := repository.UpdateUserToken(f.UserId, f.Token); err != nil {
+	if err := repository.UpdateUserToken(f.UserId, f.Token, utils.TokenValidTime); err != nil {
 		return err
 	}
 	return nil
