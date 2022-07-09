@@ -18,7 +18,7 @@ var rdb *redis.Client
 
 func Init() error {
 	var err error
-	dsn := "root:801925@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=True&loc=Local"
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), //（日志输出的目标，前缀和日志包含的内容）
 		logger.Config{
